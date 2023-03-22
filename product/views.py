@@ -56,3 +56,10 @@ def review_detail_api_view(request, id):
                         data={'error': 'Review does not exist!'})
     serializer = serializers.ReviewSerializer(review)
     return Response(data=serializer.data)
+
+
+@api_view(['GET'])
+def product_with_review_api_view(request):
+    products = models.Product.objects.all()
+    serializer = serializers.ProductWithReviews(products, many=True)
+    return Response(data=serializer.data)
