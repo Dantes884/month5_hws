@@ -4,58 +4,108 @@ from rest_framework import status
 from . import models, serializers
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def category_list_api_view(request):
-    categories = models.Category.objects.all()
-    serializer = serializers.CategorySerializer(categories, many=True)
-    return Response(data=serializer.data)
+    if request.method == 'GET':
+        categories = models.Category.objects.all()
+        serializer = serializers.CategorySerializer(categories, many=True)
+        return Response(data=serializer.data)
+    elif request.method == 'POST':
+        name = request.data.get('name')
+        category = models.Category.objects.create(name=name)
+        return Response(data=serializers.CategorySerializer(category).data)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def category_detail_api_view(request, id):
     try:
         category = models.Category.objects.get(id=id)
     except models.Category.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND,
                         data={'error': 'Category does not exist!'})
-    serializer = serializers.CategorySerializer(category)
-    return Response(data=serializer.data)
+    if request.method == 'GET':
+        serializer = serializers.CategorySerializer(category)
+        return Response(data=serializer.data)
+    elif request.method == 'PUT':
+        category.name = request.data.get('name')
+        return Response(data=serializers.CategorySerializer(category).data)
+    elif request.method == 'DELETE':
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def product_list_api_view(request):
-    products = models.Product.objects.all()
-    serializer = serializers.ProductSerializer(products, many=True)
-    return Response(data=serializer.data)
+    if request.method == 'GET':
+        products = models.Product.objects.all()
+        serializer = serializers.ProductSerializer(products, many=True)
+        return Response(data=serializer.data)
+    elif request.method == 'POST':
+        name = request.data.get('name')
+        description = request.data.get('description')
+        price = request.data.get('price')
+        category = request.data.get('category')
+        product = models.Product.objects.create(name=name, description=description, price=price)
+        product.category.set(category)
+        product.save()
+        return Response(data=serializers.ProductSerializer(product).data)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def product_detail_api_view(request, id):
     try:
         product = models.Product.objects.get(id=id)
     except models.Product.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND,
                         data={'error': 'Product does not exist!'})
-    serializer = serializers.ProductSerializer(product)
-    return Response(data=serializer.data)
+    if request.method == 'GET':
+        serializer = serializers.ProductSerializer(product)
+        return Response(data=serializer.data)
+    elif request.method == 'PUT':
+        product.name = request.data.get('name')
+        product.description = request.data.get('description')
+        product.price = request.data.get('price')
+        category = request.data.get('category')
+        product.category.set(category)
+        product.save()
+        return Response(data=serializers.ProductSerializer(product).data)
+    elif request.method == 'DELETE':
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def review_list_api_view(request):
-    review = models.Review.objects.all()
-    serializer = serializers.ReviewSerializer(review, many=True)
-    return Response(data=serializer.data)
+    if request.method == 'GET':
+        review = models.Review.objects.all()
+        serializer = serializers.ReviewSerializer(review, many=True)
+        return Response(data=serializer.data)
+    if request.method == 'POST':
+        text = request.data.get('text')
+        stars = request.data.get('stars')
+        product_id = request.data.get('product_id')
+        review = models.Review.objects.create(text=text, stars=stars, product_id=product_id)
+        return Response(data=serializers.ReviewSerializer(review).data)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def review_detail_api_view(request, id):
     try:
         review = models.Review.objects.get(id=id)
     except models.Review.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND,
                         data={'error': 'Review does not exist!'})
-    serializer = serializers.ReviewSerializer(review)
-    return Response(data=serializer.data)
+    if request.method == 'GET':
+        serializer = serializers.ReviewSerializer(review)
+        return Response(data=serializer.data)
+    elif request.method == 'PUT':
+        review.text = request.data.get('text')
+        review.stars = request.data.get('stars')
+        review.product_id = request.data.get('product_id')
+        return Response(data=serializers.ReviewSerializer(review).data)
+    elif request.method == 'DELETE':
+        review.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
