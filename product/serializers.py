@@ -11,13 +11,13 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Product
-        fields = '__all__'
+        fields = 'name price description category_name'.split()
 
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Review
-        fields = '__all__'
+        fields = 'text stars product_name'.split()
 
 
 class ProductWithReviews(serializers.ModelSerializer):
