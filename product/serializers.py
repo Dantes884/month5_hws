@@ -34,7 +34,7 @@ class ProductValidateSerializer(serializers.Serializer):
     description = serializers.CharField()
     price = serializers.IntegerField(min_value=1)
     category = serializers.ListField(child=serializers.IntegerField())
-    tag = serializers.ListField(child=serializers.IntegerField())
+    tag = serializers.ListField(child=serializers.IntegerField(), required=False)
 
     def validate_categories(self, categories):
         for i in categories:
