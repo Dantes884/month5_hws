@@ -53,5 +53,3 @@ def confirm_user_views(request):
     except ValueError:
         return Response(status=status.HTTP_406_NOT_ACCEPTABLE,
                         data={'error': 'write code number!'})
-
-

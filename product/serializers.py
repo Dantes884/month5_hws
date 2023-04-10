@@ -29,7 +29,7 @@ class ProductWithReviews(serializers.ModelSerializer):
         fields = 'name reviews rating'.split()
 
 
-class ProductValidateSerializer(serializers.Serializer):
+class ProductValidateSerializer(ProductSerializer):
     name = serializers.CharField(max_length=50)
     description = serializers.CharField()
     price = serializers.IntegerField(min_value=1)
@@ -55,11 +55,11 @@ class ProductValidateSerializer(serializers.Serializer):
         raise ValidationError(f'This ids doesnt exist {set(tag).difference(lst_)}')
 
 
-class CategoryValidateSerializer(serializers.Serializer):
+class CategoryValidateSerializer(CategorySerializer):
     name = serializers.CharField()
 
 
-class ReviewValidateSerializer(serializers.Serializer):
+class ReviewValidateSerializer(ReviewSerializer):
     text = serializers.CharField()
     stars = serializers.IntegerField(min_value=1, max_value=5)
     product_id = serializers.IntegerField()
